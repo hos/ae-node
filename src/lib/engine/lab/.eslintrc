@@ -1,0 +1,31 @@
+{
+  "extends": [
+    "standard"
+  ],
+  "plugins": [
+    "standard",
+    "extendscript"
+  ],
+  "globals": {
+    "$": true,
+    "aeq": true,
+    "alert": true,
+    "app": true,
+    "File": true,
+    "FootageItem": true,
+    "Lab": true,
+    "PropertyType": true,
+    "PropertyValueType": true,
+    "Socket": true
+  },
+  "env": {
+    "extendscript/base": true,
+    "extendscript/scriptui": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 3
+  },
+  "rules": {
+    "no-var": 0
+  }
+}
