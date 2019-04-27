@@ -34,8 +34,6 @@
   },
   "scripts": {
     "debug": "node --inspect ./src/bin/www",
-    "lint": "./node_modules/.bin/eslint ./src ./test --fix",
-    "lint-no-fix": "./node_modules/.bin/eslint ./src ./test",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
