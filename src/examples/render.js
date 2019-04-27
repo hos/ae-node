@@ -1,13 +1,15 @@
-const { render } = require('../')
+import { render } from '../'
 
 async function test () {
   const data = {
     id: 'test-render',
 
-    credentials: [{
-      accessKeyId: process.env.ACCESS_KEY_ID,
-      secretAccessKey: process.env.SECRET_ACCESS_KEY
-    }],
+    credentials: [
+      {
+        accessKeyId: process.env.ACCESS_KEY_ID,
+        secretAccessKey: process.env.SECRET_ACCESS_KEY
+      }
+    ],
 
     template: {
       path: 'UserName/Template',
@@ -15,16 +17,19 @@ async function test () {
       composition: 'Composition'
     },
 
-    layers: [{
-      relativePath: '/(Footage)/_Project Files/Images/logo.png',
-      resource: {
-        fetchMethod: 'http',
-        url: 'https://fakeimg.pl/1500x1500/ffffff,0/ccc,255/?text=Logo'
+    layers: [
+      {
+        relativePath: '/(Footage)/_Project Files/Images/logo.png',
+        resource: {
+          fetchMethod: 'http',
+          url: 'https://fakeimg.pl/1500x1500/ffffff,0/ccc,255/?text=Logo'
+        }
+      },
+      {
+        name: 'Layer Name',
+        value: 'The Text'
       }
-    }, {
-      name: 'Layer Name',
-      value: 'The Text'
-    }],
+    ],
 
     output: {
       name: 'CineForm',

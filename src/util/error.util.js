@@ -19,4 +19,4 @@ const ERRORS = ERRORS_NAME.reduce((acc, className) => {
   return acc
 }, {})
 
-module.exports = ERRORS
+export default ERRORS

@@ -2,25 +2,28 @@
  * Module is high level API for analyzing After Effects.
  */
 
-const path = require('path')
+import path from 'path'
 
-const fsExtra = require('fs-extra')
-const walkPromise = require('walk-promise')
+import fsExtra from 'fs-extra'
+import walkPromise from 'walk-promise'
 
-const { LoggerUtil } = require('../../util')
-const AfterEffects = require('./after-effects')
-const Brew = require('./Brew')
-const config = require('../../config')
-const Sync = require('../sync')
+import { LoggerUtil } from '../../util'
+import AfterEffects from './after-effects'
+import Brew from './Brew'
+import * as config from '../../config'
+import Sync from '../sync'
 
 const { WORKPLACE } = config
 
-class Analyzer {
+export class Analyzer {
   constructor (data) {
     const { template, id } = data
     this.task = data
 
-    this.templateLocalPath = path.join(config.TEMPLATES.LOCAL_PATH, template.path)
+    this.templateLocalPath = path.join(
+      config.TEMPLATES.LOCAL_PATH,
+      template.path
+    )
     this.outputDir = path.join(WORKPLACE, 'analyzes', id)
   }
 
@@ -37,8 +40,7 @@ class Analyzer {
     this.aeps = items
       .filter(item => item.name.endsWith('.aep'))
       .map(item => {
-        const relativePath = item.root
-          .replace(this.templateLocalPath, '')
+        const relativePath = item.root.replace(this.templateLocalPath, '')
 
         return path.join(
           relativePath || '/', // ensure that it starts with '/'
@@ -99,10 +101,6 @@ class Analyzer {
   }
 }
 
-const analyze = (data) => {
+export const analyze = data => {
   return new Analyzer(data).analyze()
-}
-
-module.exports = {
-  analyze
 }

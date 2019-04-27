@@ -1,7 +1,7 @@
-const fsExtra = require('fs-extra')
-const http = require('http')
-const https = require('https')
-const path = require('path')
+import fsExtra from 'fs-extra'
+import http from 'http'
+import https from 'https'
+import path from 'path'
 
 const { STATUS_CODES } = http
 
@@ -16,29 +16,30 @@ const download = async (resource, dest) => {
   await fsExtra.ensureDir(path.dirname(dest))
 
   return new Promise((resolve, reject) => {
-    const onResponse = (response) => {
+    const onResponse = response => {
       if (response.statusCode >= 300) {
         if (response.statusCode < 400) {
           resolve(download(response.headers.location, dest))
         } else {
-          reject(new Error(`${response.statusCode} : ${STATUS_CODES[response.statusCode]}`))
+          reject(
+            new Error(
+              `${response.statusCode} : ${STATUS_CODES[response.statusCode]}`
+            )
+          )
         }
         return
       }
 
       const fileStream = fsExtra.createWriteStream(dest)
-      fileStream
-        .once('error', reject)
-        .once('close', () => resolve(dest))
-      response
-        .once('error', err => reject(err))
-        .pipe(fileStream)
+      fileStream.once('error', reject).once('close', () => resolve(dest))
+      response.once('error', err => reject(err)).pipe(fileStream)
     }
 
-    request.get(url)
+    request
+      .get(url)
       .once('response', onResponse)
       .once('error', reject)
   })
 }
 
-module.exports = download
+export default download

@@ -3,17 +3,17 @@
  * projects and executing scripts.
  */
 
-const path = require('path')
+import path from 'path'
 
-const fsExtra = require('fs-extra')
+import fsExtra from 'fs-extra'
 
-const { LoggerUtil } = require('../../util')
-const AfterEffects = require('./after-effects')
-const Brew = require('./Brew')
-const config = require('../../config')
-const Download = require('../download')
-const S3 = require('../upload/s3')
-const sync = require('../sync')
+import { LoggerUtil } from '../../util'
+import AfterEffects from './after-effects'
+import Brew from './Brew'
+import * as config from '../../config'
+import Download from '../download'
+import S3 from '../upload/s3'
+import sync from '../sync'
 
 const { WORKPLACE } = config
 
@@ -24,7 +24,10 @@ class Render {
     const { template, output = {} } = data
     const outputName = output.name
 
-    this.templateLocalPath = path.join(config.TEMPLATES.LOCAL_PATH, template.path)
+    this.templateLocalPath = path.join(
+      config.TEMPLATES.LOCAL_PATH,
+      template.path
+    )
     this.aepPath = path.join(this.templateLocalPath, template.aepName)
     this.outputDir = path.join(WORKPLACE, 'render', data.id)
     this.outputPath = path.join(this.outputDir, `${outputName}.mov`)
@@ -71,25 +74,21 @@ class Render {
 
     for (const layer of layers) {
       if (layer.resource) {
-        ae.replaceAsset(
-          layer.relativePath,
-          layer._filePath
-        )
+        ae.replaceAsset(layer.relativePath, layer._filePath)
       } else if (layer.value) {
         ae.replaceText(layer.name, layer.value)
       }
     }
 
-    ae
-      .addQueue(template.composition)
-      .setOutput(this.outputPath)
+    ae.addQueue(template.composition).setOutput(this.outputPath)
 
     if (resolution && resolution.width > 0 && resolution.height > 0) {
       ae.setResizeTo(resolution.width, resolution.height)
     }
 
     // save to prevent Ae opening dialog for unsaved files
-    return ae.saveProject()
+    return ae
+      .saveProject()
       .closeProject(AfterEffects.CLOSE_OPTION.SAVE_CHANGES)
       .endSuppressDialogs()
       .promise()
@@ -124,17 +123,13 @@ class Render {
         continue
       }
 
-      const opts = Object.assign({}, resource,
-        this.getCredentials(resource)
-      )
+      const opts = Object.assign({}, resource, this.getCredentials(resource))
 
       layer._filePath = path.join(this.outputDir, layer.relativePath)
       await fsExtra.ensureDir(path.dirname(layer._filePath))
 
       const downloader = Download[resource.fetchMethod]
-      toDos.push(
-        downloader(opts, layer._filePath)
-      )
+      toDos.push(downloader(opts, layer._filePath))
     }
 
     await Promise.all(toDos)
@@ -159,11 +154,7 @@ class Render {
     const task = this.task
     const credentials = this.getCredentials(task.upload)
 
-    await S3.upload(
-      this.outputPath,
-      credentials,
-      this.task.upload
-    )
+    await S3.upload(this.outputPath, credentials, this.task.upload)
   }
 
   /**
@@ -195,10 +186,6 @@ class Render {
  * @description Render the project described in template
  * and than upload to s3 compatible device.
  */
-const render = (task) => {
+export const render = task => {
   return new Render(task).render()
-}
-
-module.exports = {
-  render
 }

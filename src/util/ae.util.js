@@ -1,5 +1,5 @@
 
-class AeUtil {
+export default class AeUtil {
   /**
    * @param {string} code
    * @description If code starts with '(',
@@ -26,5 +26,3 @@ class AeUtil {
     }
   }
 }
-
-module.exports = AeUtil

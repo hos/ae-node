@@ -1,11 +1,11 @@
-const { exec } = require('child_process')
-const util = require('util')
+import { exec } from 'child_process'
+import util from 'util'
 
-const fsExtra = require('fs-extra')
-const path = require('path')
+import fsExtra from 'fs-extra'
+import path from 'path'
 
-const { ErrorUtil } = require('../util')
-const { TEMPLATES } = require('../config')
+import { ErrorUtil } from '../util'
+import { TEMPLATES } from '../config'
 
 const execPromise = util.promisify(exec)
 
@@ -51,8 +51,9 @@ const sync = async (templatePath) => {
 
     await execPromise(cmd, { env })
   } catch (err) {
+    console.log(err)
     throw new ErrorUtil.TemplateSyncError(err.message)
   }
 }
 
-module.exports = sync
+export default sync

@@ -1,12 +1,12 @@
-const path = require('path')
+import path from 'path'
 
-const fsExtra = require('fs-extra')
+import fsExtra from 'fs-extra'
 
-const AfterEffects = require('./after-effects')
-const config = require('../../config')
-const s3Upload = require('../upload/s3')
-const sync = require('../sync')
-const ffmpeg = require('../ffmpeg')
+import AfterEffects from './after-effects'
+import * as config from '../../config'
+import s3Upload from '../upload/s3'
+import sync from '../sync'
+import { toH264 } from '../ffmpeg'
 
 const { WORKPLACE, TEMPLATES } = config
 const { TEMPLATE_PREVIEW_FOLDER_NAME } = TEMPLATES
@@ -31,7 +31,7 @@ class Preview {
   async cineFormToH264 (input) {
     const ext = path.extname(input)
     const output = input.replace(new RegExp(ext + '$'), '.mp4')
-    await ffmpeg.toH264(input, output)
+    await toH264(input, output)
   }
 
   async uploadPreviews (composition, outPath) {
@@ -39,9 +39,11 @@ class Preview {
 
     const previews = await fsExtra.readdir(outPath)
 
-    const promises = previews.map(async (previewFile) => {
+    const promises = previews.map(async previewFile => {
       const filePath = path.join(outPath, previewFile)
-      const key = `${template.path}/${TEMPLATE_PREVIEW_FOLDER_NAME}/${composition.name}/${previewFile}`
+      const key = `${template.path}/${TEMPLATE_PREVIEW_FOLDER_NAME}/${
+        composition.name
+      }/${previewFile}`
 
       await s3Upload.upload(filePath, credentials, {
         endpoint: TEMPLATES.S3_ENDPOINT,
@@ -63,7 +65,10 @@ class Preview {
       const ext = AfterEffects.OM_TEMPLATE_FILE_SUFFIX[output.omTemplate]
 
       for (const resolution of this.resolutions) {
-        const outputPath = path.join(outPath, `${resolution.height}x${resolution.width}${ext}`)
+        const outputPath = path.join(
+          outPath,
+          `${resolution.height}x${resolution.width}${ext}`
+        )
 
         await fsExtra.ensureDir(outPath)
         await AfterEffects.aerender({
@@ -96,7 +101,12 @@ class Preview {
 
     for (const aep of template.aeps) {
       for (const composition of aep.compositions) {
-        const outPath = path.join(WORKPLACE, 'preview', template.path, composition.name)
+        const outPath = path.join(
+          WORKPLACE,
+          'preview',
+          template.path,
+          composition.name
+        )
 
         await this.makePreviewForComp(aep, composition, outPath)
       }
@@ -121,10 +131,6 @@ class Preview {
  * for each composition provided in 'aeps.compositions' array
  * and with each resolution provided in resolutions array.
  */
-const preview = async (data) => {
+export const preview = async data => {
   return new Preview(data).makeTemplatePreview()
-}
-
-module.exports = {
-  preview
 }

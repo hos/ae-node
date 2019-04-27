@@ -4,19 +4,21 @@
  * extendscript for sending messages to node.js server.
  */
 
-const net = require('net')
-const os = require('os')
-const path = require('path')
+import net from 'net'
+import os from 'os'
+import path from 'path'
 
-const fsExtra = require('fs-extra')
+import fsExtra from 'fs-extra'
 
-const AfterEffects = require('./after-effects')
-const { AeUtil, ErrorUtil } = require('../../util')
-const config = require('../../config')
+import AfterEffects from './after-effects'
+import { AeUtil, ErrorUtil } from '../../util'
+import * as config from '../../config'
 
 const { WORKPLACE } = config
 
-const AEQUERY_PATH = require.resolve('aequery').replace(/\\/g, '/') // to make path correct on windows
+const AEQUERY_PATH = path
+  .resolve('node_modules', 'aequery/index.js')
+  .replace(/\\/g, '/') // to make path correct on windows
 
 // Directory with write access.
 const SCRIPTS_PATH = path.join(WORKPLACE, 'engine')
@@ -33,7 +35,7 @@ const defaultContext = {
 
 Object.freeze(defaultContext)
 
-class Brew {
+export default class Brew {
   /**
    * @param {string} flags
    * @returns {string} Not supported flag, if any.
@@ -42,9 +44,7 @@ class Brew {
    */
   static validateRegExpFlags (flags) {
     const supportedFlags = ['i', 'm', 'g']
-    return flags
-      .split('')
-      .some(f => !supportedFlags.find(f))
+    return flags.split('').some(f => !supportedFlags.find(f))
   }
 
   /**
@@ -62,9 +62,7 @@ class Brew {
       return JSON.stringify(argv)
     }
 
-    const argsStr = args
-      .map(withUndefined)
-      .join(',')
+    const argsStr = args.map(withUndefined).join(',')
 
     return code.replace(/\(.*\)/, `(${argsStr})`)
   }
@@ -74,8 +72,8 @@ class Brew {
    * @description Load file with import(),
    * if there is _error throw, otherwise return 'output'.
    */
-  static loadOutput (filePath) {
-    const output = require(filePath)
+  static async loadOutput (filePath) {
+    const output = await fsExtra.readJSON(filePath)
 
     if (!output) {
       throw Error('output is missing after execution')
@@ -106,7 +104,7 @@ class Brew {
       scriptPath: dir && path.join(dir, `script.${scriptExt}`)
     })
 
-    this.server = net.createServer((socket) => {
+    this.server = net.createServer(socket => {
       socket.pipe(process.stdout)
       socket.unref()
     })
@@ -153,9 +151,7 @@ class Brew {
    * @description Open provided 'aep' file.
    */
   openProject (aepPath) {
-    return this.addCode(
-      Brew.setArgs(`var file = Lab.openProject()`, aepPath)
-    )
+    return this.addCode(Brew.setArgs(`var file = Lab.openProject()`, aepPath))
   }
 
   /**
@@ -168,15 +164,11 @@ class Brew {
   }
 
   beginSuppressDialogs () {
-    return this.addCode(
-      `app.beginSuppressDialogs()`
-    )
+    return this.addCode(`app.beginSuppressDialogs()`)
   }
 
   endSuppressDialogs (alert = false) {
-    return this.addCode(
-      `app.endSuppressDialogs(${alert})`
-    )
+    return this.addCode(`app.endSuppressDialogs(${alert})`)
   }
 
   /**
@@ -186,9 +178,7 @@ class Brew {
    * 'PurgeTarget.ALL_CACHES' option.
    */
   purge (option = AfterEffects.PURGE_TARGET.ALL_CACHES) {
-    return this.addCode(
-      `app.purge(${option})`
-    )
+    return this.addCode(`app.purge(${option})`)
   }
 
   /**
@@ -197,9 +187,7 @@ class Brew {
    * run the provided code.
    */
   runFn (fn) {
-    return this.addCode(
-      `return (${fn.toString()})()`
-    )
+    return this.addCode(`return (${fn.toString()})()`)
   }
 
   /**
@@ -208,9 +196,7 @@ class Brew {
    * this will use addCode under the hook.
    */
   runCode (code) {
-    return this.addCode(
-      AeUtil.normalizeCode(code)
-    )
+    return this.addCode(AeUtil.normalizeCode(code))
   }
 
   /**
@@ -228,9 +214,7 @@ class Brew {
    * @param {*} value
    */
   replaceText (layerName, value) {
-    return this.addCode(
-      Brew.setArgs(`Lab.replaceText()`, layerName, value)
-    )
+    return this.addCode(Brew.setArgs(`Lab.replaceText()`, layerName, value))
   }
 
   /**
@@ -311,7 +295,9 @@ class Brew {
     if (typeof flags === 'string') {
       const invalidFlag = Brew.validateRegExpFlags(flags)
       if (invalidFlag) {
-        throw Error(`the flag '${invalidFlag}' is not supported by extendscript`)
+        throw Error(
+          `the flag '${invalidFlag}' is not supported by extendscript`
+        )
       }
     }
 
@@ -332,9 +318,7 @@ class Brew {
    * @description Call 'renderQueue.render()' function.
    */
   render () {
-    return this.addCode(
-      `app.project.renderQueue.render()`
-    )
+    return this.addCode(`app.project.renderQueue.render()`)
   }
 
   /**
@@ -370,9 +354,7 @@ class Brew {
    * @description Save project on same file.
    */
   saveProject () {
-    return this.addCode(
-      `app.project.save(file)`
-    )
+    return this.addCode(`app.project.save(file)`)
   }
 
   /**
@@ -393,7 +375,7 @@ class Brew {
 
   async openChat () {
     return new Promise((resolve, reject) => {
-      this.server.on('error', (err) => {
+      this.server.on('error', err => {
         if (!resolve.called) {
           reject(err)
         }
@@ -411,7 +393,7 @@ class Brew {
   async closeChat () {
     return new Promise((resolve, reject) => {
       if (this.server.listening) {
-        this.server.close((err) => {
+        this.server.close(err => {
           if (err) {
             reject(err)
           } else {
@@ -446,5 +428,3 @@ class Brew {
     return Brew.loadOutput(this.ctx.outputPath)
   }
 }
-
-module.exports = Brew

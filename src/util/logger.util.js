@@ -1,4 +1,4 @@
-const winston = require('winston')
+import winston from 'winston'
 
 winston.addColors({
   error: 'red',
@@ -9,7 +9,7 @@ winston.addColors({
   silly: 'magenta'
 })
 
-const consoleTransport = new (winston.transports.Console)({
+const consoleTransport = new winston.transports.Console({
   level: process.env.LOG_LEVEL,
   colorize: true,
   timestamp: false,
@@ -23,4 +23,4 @@ const logger = winston.createLogger({
   transports: [consoleTransport]
 })
 
-module.exports = logger
+export default logger

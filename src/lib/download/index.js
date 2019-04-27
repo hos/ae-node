@@ -1,2 +1,4 @@
-module.exports.http = require('./http')
-module.exports.s3 = require('./s3')
+import http from './http'
+import s3 from './s3'
+
+export default { http, s3 }

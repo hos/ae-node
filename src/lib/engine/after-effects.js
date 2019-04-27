@@ -5,13 +5,13 @@
  * required operations.
  */
 
-const childProcess = require('child_process')
-const fsExtra = require('fs-extra')
-const os = require('os')
-const util = require('util')
+import childProcess from 'child_process'
+import fsExtra from 'fs-extra'
+import os from 'os'
+import util from 'util'
 
-const { ErrorUtil } = require('../../util')
-const config = require('../../config')
+import { ErrorUtil } from '../../util'
+import * as config from '../../config'
 
 const { AFTER_EFFECTS } = config
 const { exec } = childProcess
@@ -28,7 +28,7 @@ const SET_FREE = Symbol('setFree')
  * scripts in after effects. For details
  * see https://adobe.ly/2CsGsPG.
  */
-const cmdForScript = (filePath) => {
+const cmdForScript = filePath => {
   if (os.platform() === 'win32') {
     return `afterfx -r "${filePath}"`
   } else {
@@ -70,7 +70,7 @@ const generateCommand = (params = {}) => {
  * @param {string} str The Ae stdout and stderr.
  * @description Throw error if log contain error message.
  */
-const throwIfFailed = (str) => {
+const throwIfFailed = str => {
   const regExs = [
     /.*aerender ERROR:.*/,
     /.*After Effects error:[^\r\n]+/,
@@ -90,7 +90,7 @@ const throwIfFailed = (str) => {
   })
 }
 
-class AfterEffects {
+export default class AfterEffects {
   static get OM_TEMPLATE_FILE_SUFFIX () {
     return {
       CineForm: '.mov',
@@ -160,7 +160,8 @@ class AfterEffects {
     if (isRenderOnly) {
       await fsExtra.writeFile(AFTER_EFFECTS.RENDER_ONLY_FILENAME, '')
     } else {
-      await fsExtra.remove(AFTER_EFFECTS.RENDER_ONLY_FILENAME)
+      await fsExtra
+        .remove(AFTER_EFFECTS.RENDER_ONLY_FILENAME)
         .catch(() => false)
     }
   }
@@ -205,7 +206,7 @@ class AfterEffects {
  * to and block other calls until current
  * will complete.
  */
-['runScript', 'aerender'].forEach((fnName) => {
+;['runScript', 'aerender'].forEach(fnName => {
   const fn = AfterEffects[fnName]
 
   AfterEffects[fnName] = async function () {
@@ -217,5 +218,3 @@ class AfterEffects {
     }
   }
 })
-
-module.exports = AfterEffects

@@ -1,5 +1,7 @@
-const { S3 } = require('aws-sdk')
-const fsExtra = require('fs-extra')
+import AwsSdk from 'aws-sdk'
+import fsExtra from 'fs-extra'
+
+const { S3 } = AwsSdk
 
 /**
  * @param {{accessKeyId, secretAccessKey, key, endpoint, bucket}} resource
@@ -27,4 +29,4 @@ const download = async (resource, dest) => {
   return dest
 }
 
-module.exports = download
+export default download

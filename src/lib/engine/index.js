@@ -1,9 +1,6 @@
-const { analyze } = require('./analyze')
-const { preview } = require('./preview')
-const { render } = require('./render')
+import { analyze } from './analyze'
+import { preview } from './preview'
+import { render } from './render'
 
-module.exports = {
-  analyze,
-  preview,
-  render
-}
+export default { analyze, preview, render }
+export { analyze, preview, render }

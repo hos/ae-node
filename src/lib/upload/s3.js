@@ -1,8 +1,8 @@
-const fs = require('fs')
+import fs from 'fs'
 
-const AwsSdk = require('aws-sdk')
+import AwsSdk from 'aws-sdk'
 
-class S3Lib {
+export default class S3Lib {
   /**
    * @param filePath
    * @param credentials
@@ -25,10 +25,6 @@ class S3Lib {
       Body: stream
     }
 
-    return s3
-      .upload(params)
-      .promise()
+    return s3.upload(params).promise()
   }
 }
-
-module.exports = S3Lib

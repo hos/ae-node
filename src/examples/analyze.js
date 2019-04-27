@@ -1,4 +1,4 @@
-const { analyze } = require('../')
+import { analyze } from '../'
 
 async function test () {
   const data = {

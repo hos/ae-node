@@ -1,5 +1,7 @@
-const { ProcessVariablesCheckerUtil } = require('./util')
+import { ProcessVariablesCheckerUtil } from './util'
+import { analyze, render, preview } from './lib/engine'
 
 ProcessVariablesCheckerUtil.check()
 
-module.exports = require('./lib/engine')
+export default { analyze, render, preview }
+export { analyze, render, preview }
