@@ -8,6 +8,9 @@ This project only exports high level public API. There is no interface for advan
 * After Effects
 * rclone (tested on v1.44)
 
+* As of node 12.0.0 you need to use flags [`--experimental-modules`](https://nodejs.org/dist/latest-v12.x/docs/api/esm.html#esm_enabling) and 
+[`--es-module-specifier-resolution=node`](https://nodejs.org/dist/latest-v12.x/docs/api/esm.html#esm_customizing_esm_specifier_resolution_algorithm)
+
 - The OMTemplate which must be used, first must be installed. See how to configure
   output module in [docs](https://adobe.ly/23CcygY).
 - If there is no `Ae` license installed, better to use [render only mode](https://adobe.ly/2c854g3).
