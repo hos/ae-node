@@ -4,7 +4,7 @@ This project only exports high level public API. There is no interface for advan
 
 ### Installation
 
-* Node.js >= 10.12.0
+* Node.js >= 12.0.0
 * After Effects
 * rclone (tested on v1.44)
 
