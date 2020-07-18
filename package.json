@@ -3,34 +3,34 @@
   "description": "Ae lib",
   "version": "0.0.0",
   "bugs": {
-    "url": "https://github.com/AlbertHambardzumyan/ae-lib/issues"
+    "url": "https://github.com/hos/ae-lib/issues"
   },
   "dependencies": {
     "aequery": "^0.6.0",
-    "aws-sdk": "^2.444.0",
-    "fs-extra": "^7.0.1",
+    "aws-sdk": "^2.715.0",
+    "fs-extra": "^9.0.1",
     "walk-promise": "^0.2.0",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
-    "eslint": "^5.16.0",
-    "eslint-config-standard": "^12.0.0",
+    "eslint": "^7.4.0",
+    "eslint-config-standard": "^14.1.1",
     "eslint-plugin-extendscript": "^1.0.1",
-    "eslint-plugin-import": "^2.17.2",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.1.1",
-    "eslint-plugin-standard": "^4.0.0"
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.5.0"
   },
-  "homepage": "https://github.com/AlbertHambardzumyan/ae-lib#readme",
+  "homepage": "https://github.com/hos/ae-lib#readme",
   "keywords": [],
   "license": "ISC",
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AlbertHambardzumyan/ae-lib.git"
+    "url": "git+https://github.com/hos/ae-lib.git"
   },
   "scripts": {
     "debug": "node --inspect ./src/bin/www",
